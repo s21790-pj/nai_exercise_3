@@ -97,6 +97,38 @@ def pearson_score(dataset, user1, user2):
     return Sxy / np.sqrt(Sxx * Syy)
 
 
+def get_movies_to_recommend(passed_user, match_user, data_json):
+    """
+
+    :param passed_user:
+    :param match_user:
+    :param data_json:
+    """
+    passed_user_movies = data_json[passed_user]
+    match_user_movies = sorted(data_json[match_user].items(), key=lambda x: x[1], reverse=True)
+
+    print(f"Recommended movies for user {passed_user}")
+    counter = 0
+    selected_movies = []
+    for chosen_movie in match_user_movies:
+        if chosen_movie not in passed_user_movies and counter < 5:
+            selected_movies.append(chosen_movie)
+            counter += 1
+    for idx in range(len(selected_movies)):
+        print(f"{idx+1}. {selected_movies[idx]}\n")
+
+
+def get_not_recommended_movies(passed_user, scores, data_json):
+    """
+
+    :param passed_user:
+    :param scores:
+    :param data_json:
+    """
+    passed_user_movies = data_json[passed_user]
+    pass
+
+
 def get_all_users(data_json):
     users = list(set(data_json.keys()))
     users.remove(user)
@@ -113,4 +145,9 @@ if __name__ == '__main__':
     with open('ratings.json', 'r', encoding='UTF8') as json_file:
         data = json.loads(json_file.read())
 
-    get_all_users(data)
+    # all_users = get_all_users(data)
+    # get_movies_to_recommend('Szymon Olkiewicz', 'Paweł Czapiewski', data)
+
+
+
+
