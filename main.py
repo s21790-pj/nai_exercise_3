@@ -95,3 +95,22 @@ def pearson_score(dataset, user1, user2):
         return 0
 
     return Sxy / np.sqrt(Sxx * Syy)
+
+
+def get_all_users(data_json):
+    users = list(set(data_json.keys()))
+    users.remove(user)
+    return users
+
+
+if __name__ == '__main__':
+    """
+
+    """
+    args = build_arg_parser().parse_args()
+    user = args.user
+
+    with open('ratings.json', 'r', encoding='UTF8') as json_file:
+        data = json.loads(json_file.read())
+
+    get_all_users(data)
