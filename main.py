@@ -110,10 +110,6 @@ def get_matching_results(users, data, choosen_user):
         pearsonScoreList[user] = pearson_score(data, choosen_user, user)
     pearsonScoreList = sorted(pearsonScoreList.items())
     euclideanScoreList = sorted(euclideanScoreList.items())
-    print(pearsonScoreList)
-    print("================")
-    print(euclideanScoreList)
-
     return pearsonScoreList, euclideanScoreList
 
 
