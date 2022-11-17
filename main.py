@@ -2,11 +2,16 @@ import argparse
 import json
 import numpy as np
 
+"""
+Authors: Kamil Kaczówka, Szymon Olkiewicz.
+To run application you have to install requirements by pip install -r requirements.txt 
+and you have to add argument --user.
+
+"""
 
 def build_arg_parser():
     """
-
-    :return:
+    :return: passed by argument.
     """
     parser = argparse.ArgumentParser(description='Compute similarity score')
     parser.add_argument('--user', dest='user', required=True, help='Name of user')
