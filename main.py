@@ -97,20 +97,22 @@ def pearson_score(dataset, user1, user2):
     return Sxy / np.sqrt(Sxx * Syy)
 
 
-def get_matching_results(users, data, choosen_user):
+def get_matching_results(users, data_json, choosen_user):
     """
         A function that counts the score for each user using
         euclidean and pearson algorithm
         :return: a score for each user from 1.0 to 0.0
      """
-    pearsonScoreList = {}
-    euclideanScoreList = {}
+    pearson_score_list = {}
+    euclidean_score_list = {}
+
     for user in users:
-        euclideanScoreList[user] = euclidean_score(data, choosen_user, user)
-        pearsonScoreList[user] = pearson_score(data, choosen_user, user)
-    pearsonScoreList = sorted(pearsonScoreList.items())
-    euclideanScoreList = sorted(euclideanScoreList.items())
-    return pearsonScoreList, euclideanScoreList
+        euclidean_score_list[user] = euclidean_score(data_json, choosen_user, user)
+        pearson_score_list[user] = pearson_score(data_json, choosen_user, user)
+
+    pearson_score_list = sorted(pearson_score_list.items(), key=lambda x: x[1], reverse=True)
+    euclidean_score_list = sorted(euclidean_score_list.items(), key=lambda x: x[1], reverse=True)
+    return pearson_score_list, euclidean_score_list
 
 
 def get_movies_to_recommend(passed_user, match_user, data_json):
@@ -124,14 +126,7 @@ def get_movies_to_recommend(passed_user, match_user, data_json):
     match_user_movies = sorted(data_json[match_user].items(), key=lambda x: x[1], reverse=True)
 
     print(f"Recommended movies for user {passed_user}")
-    counter = 0
-    selected_movies = []
-    for chosen_movie in match_user_movies:
-        if chosen_movie not in passed_user_movies and counter < 5:
-            selected_movies.append(chosen_movie)
-            counter += 1
-    for idx in range(len(selected_movies)):
-        print(f"{idx + 1}. {selected_movies[idx]}\n")
+    show_movies_list(match_user_movies, passed_user_movies)
 
 
 def get_not_recommended_movies(passed_user, scores, data_json):
@@ -142,10 +137,32 @@ def get_not_recommended_movies(passed_user, scores, data_json):
     :param data_json:
     """
     passed_user_movies = data_json[passed_user]
-    pass
+    not_recommended_movies = data_json[scores[2][0]]
+    not_recommended_movies.update(data_json[scores[1][0]])
+    not_recommended_movies.update(data_json[scores[0][0]])
+    not_recommended_movies = sorted(not_recommended_movies.items(), key=lambda x: x[1], reverse=False)
+
+    print(f"Not recommended movies for user {passed_user}")
+    show_movies_list(not_recommended_movies, passed_user_movies)
+
+
+def show_movies_list(movie_list, passed_user_movie_list):
+    counter = 0
+    selected_movies = []
+    for chosen_movie in movie_list:
+        if chosen_movie[0] not in passed_user_movie_list.keys() and counter < 5:
+            selected_movies.append(chosen_movie)
+            counter += 1
+    for idx in range(len(selected_movies)):
+        print(f"{idx + 1}. {selected_movies[idx]}")
 
 
 def get_all_users(data_json):
+    """
+
+    :param data_json:
+    :return:
+    """
     users = list(set(data_json.keys()))
     users.remove(user)
     return users
@@ -159,9 +176,15 @@ if __name__ == '__main__':
     user = args.user
 
     with open('ratings.json', 'r', encoding='UTF8') as json_file:
-        data = json.loads(json_file.read())
+        data_json = json.loads(json_file.read())
 
-    all_users = get_all_users(data)
-
-    get_movies_to_recommend('Szymon Olkiewicz', 'Paweł Czapiewski', data)
-    get_matching_results(all_users, data, 'Szymon Olkiewicz')
+    all_users = get_all_users(data_json)
+    pearson_score_list, euclidean_score_list = get_matching_results(all_users, data_json, user)
+    print("Pearson results")
+    print(f"The best match for user {user} is {pearson_score_list[0][0]} with score {pearson_score_list[0][1]}")
+    get_movies_to_recommend(user, pearson_score_list[0][0], data_json)
+    get_not_recommended_movies(user, pearson_score_list, data_json)
+    print("\nEuclidean results")
+    print(f"The best match for user {user} is {euclidean_score_list[0][0]} with score {euclidean_score_list[0][1]}")
+    get_movies_to_recommend(user, euclidean_score_list[0][0], data_json)
+    get_not_recommended_movies(user, euclidean_score_list, data_json)
