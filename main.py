@@ -97,6 +97,22 @@ def pearson_score(dataset, user1, user2):
     return Sxy / np.sqrt(Sxx * Syy)
 
 
+def get_matching_results(users, data, choosen_user):
+    """
+        A function that counts the score for each user using
+        euclidean and pearson algorithm
+        :return: a score for each user from 1.0 to 0.0
+     """
+    pearsonScoreList = {}
+    euclideanScoreList = {}
+    for user in users:
+        euclideanScoreList[user] = euclidean_score(data, choosen_user, user)
+        pearsonScoreList[user] = pearson_score(data, choosen_user, user)
+    pearsonScoreList = sorted(pearsonScoreList.items())
+    euclideanScoreList = sorted(euclideanScoreList.items())
+    return pearsonScoreList, euclideanScoreList
+
+
 def get_movies_to_recommend(passed_user, match_user, data_json):
     """
 
@@ -115,7 +131,7 @@ def get_movies_to_recommend(passed_user, match_user, data_json):
             selected_movies.append(chosen_movie)
             counter += 1
     for idx in range(len(selected_movies)):
-        print(f"{idx+1}. {selected_movies[idx]}\n")
+        print(f"{idx + 1}. {selected_movies[idx]}\n")
 
 
 def get_not_recommended_movies(passed_user, scores, data_json):
@@ -145,9 +161,7 @@ if __name__ == '__main__':
     with open('ratings.json', 'r', encoding='UTF8') as json_file:
         data = json.loads(json_file.read())
 
-    # all_users = get_all_users(data)
-    # get_movies_to_recommend('Szymon Olkiewicz', 'Paweł Czapiewski', data)
+    all_users = get_all_users(data)
 
-
-
-
+    get_movies_to_recommend('Szymon Olkiewicz', 'Paweł Czapiewski', data)
+    get_matching_results(all_users, data, 'Szymon Olkiewicz')
