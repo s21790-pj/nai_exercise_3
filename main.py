@@ -15,6 +15,7 @@ def build_arg_parser():
 
 def euclidean_score(dataset, user1, user2):
     """
+    This method calculating distance score between users1 and users2 based on provided date.
 
     :param dataset:
     :param user1:
@@ -50,6 +51,7 @@ def euclidean_score(dataset, user1, user2):
 
 def pearson_score(dataset, user1, user2):
     """
+    This method calculating Pearson correlation score between users1 and users2 based on provided date.
 
     :param dataset:
     :param user1:
@@ -117,6 +119,7 @@ def get_matching_results(users, data_json, choosen_user):
 
 def get_movies_to_recommend(passed_user, match_user, data_json):
     """
+    function which sorts movie list
 
     :param passed_user:
     :param match_user:
@@ -131,6 +134,8 @@ def get_movies_to_recommend(passed_user, match_user, data_json):
 
 def get_not_recommended_movies(passed_user, scores, data_json):
     """
+
+    Function which take 3 matching users movie list.
 
     :param passed_user:
     :param scores:
@@ -159,6 +164,7 @@ def show_movies_list(movie_list, passed_user_movie_list):
 
 def get_all_users(data_json):
     """
+    Function returning list of users.
 
     :param data_json:
     :return:
